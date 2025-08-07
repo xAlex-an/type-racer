@@ -49,12 +49,8 @@
 .results-panel {
     border: 2px solid #ff8400;
     border-radius: 8px;
-}
-
-.results-panel .card-header {
-    background-color: #fff3e0;
-    border-bottom: 2px solid #ff8400;
-    font-weight: 600;
+    box-shadow: 0 0 20px rgba(255, 132, 0, 0.25);
+    
 }
 
 .results-panel .card-body {
