@@ -46,6 +46,20 @@
     
 }
 
+.control-btn:hover {
+    border: 3px solid #ff8400;
+    color: #555;
+    background-color: transparent;
+    transform: none;
+}
+
+.control-btn:focus {
+    border: 3px solid #ff8400;
+    color: #555;
+    background-color: transparent;
+    box-shadow: none;
+}
+
 .results-panel {
     border: 2px solid #ff8400;
     border-radius: 8px;
