@@ -57,7 +57,7 @@
     border: 3px solid #ff8400;
     color: #555;
     background-color: transparent;
-    box-shadow: none;
+    box-shadow: none; 
 }
 
 .results-panel {

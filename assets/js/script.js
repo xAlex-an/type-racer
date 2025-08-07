@@ -17,6 +17,10 @@ const textSamples = {
     ]
 };
 
+// Global variables for timing
+let startTime = null;
+let isTestRunning = false;
+
 // Function to get random text based on difficulty
 function getRandomText(difficulty) {
     const texts = textSamples[difficulty];
@@ -35,21 +39,180 @@ function displayText() {
     textToType.textContent = randomText;
 }
 
+// Function to update difficulty level in results
+function updateResultLevel() {
+    const difficultySelect = document.getElementById('difficultySelect');
+    const resultLevel = document.getElementById('resultLevel');
+    
+    const selectedDifficulty = difficultySelect.value;
+    resultLevel.textContent = selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1);
+}
+
+// Function to calculate correctly typed words
+function calculateCorrectWords(originalText, typedText) {
+    const originalWords = originalText.trim().split(/\s+/);
+    const typedWords = typedText.trim().split(/\s+/);
+    
+    let correctWords = 0;
+    
+    // Compare each word typed with the original
+    for (let i = 0; i < Math.min(originalWords.length, typedWords.length); i++) {
+        if (originalWords[i] === typedWords[i]) {
+            correctWords++;
+        }
+    }
+    
+    return correctWords;
+}
+
+// Function to calculate WPM (Words Per Minute) based on correct words
+function calculateWPM(correctWords, timeInSeconds) {
+    if (timeInSeconds === 0) return 0;
+    const minutes = timeInSeconds / 60;
+    return Math.round(correctWords / minutes);
+}
+
+// Function to get the current sample text being displayed
+function getCurrentSampleText() {
+    const textToType = document.getElementById('textToType');
+    return textToType.textContent;
+}
+
+// Function to start the typing test
+function startTest() {
+    const typingInput = document.getElementById('typingInput');
+    const startBtn = document.querySelectorAll('.control-btn')[0];
+    const stopBtn = document.querySelectorAll('.control-btn')[1];
+    
+    // Prevent multiple starts
+    if (isTestRunning) {
+        return;
+    }
+    
+    // Record start time
+    startTime = Date.now();
+    isTestRunning = true;
+    
+    // Enable typing input and clear it
+    typingInput.disabled = false;
+    typingInput.value = '';
+    typingInput.placeholder = 'Start typing here...';
+    typingInput.focus();
+    
+    // Update button states
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    
+    // Generate new text for the test and update difficulty in results
+    displayText();
+    updateResultLevel();
+}
+
+// Function to stop the typing test
+function stopTest() {
+    const typingInput = document.getElementById('typingInput');
+    const startBtn = document.querySelectorAll('.control-btn')[0];
+    const stopBtn = document.querySelectorAll('.control-btn')[1];
+    const resultTime = document.getElementById('resultTime');
+    const resultWPM = document.getElementById('resultWPM');
+    
+    if (!isTestRunning || !startTime) {
+        return;
+    }
+    
+    // Calculate elapsed time in seconds
+    const endTime = Date.now();
+    const elapsedTimeMs = endTime - startTime;
+    const elapsedTimeSeconds = elapsedTimeMs / 1000;
+    
+    // Get the original text and typed text
+    const originalText = getCurrentSampleText();
+    const typedText = typingInput.value;
+    
+    // Calculate correct words and WPM
+    const correctWords = calculateCorrectWords(originalText, typedText);
+    const wpm = calculateWPM(correctWords, elapsedTimeSeconds);
+    
+    // Update the results display
+    resultTime.textContent = elapsedTimeSeconds.toFixed(2) + 's';
+    resultWPM.textContent = wpm;
+    
+    // Disable typing input
+    typingInput.disabled = true;
+    typingInput.placeholder = 'Test completed! Click Start to begin a new test.';
+    
+    // Update button states
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    
+    // Reset test state
+    isTestRunning = false;
+    startTime = null;
+}
+
+// Function to retry the typing test
+function retryTest() {
+    const typingInput = document.getElementById('typingInput');
+    const startBtn = document.querySelectorAll('.control-btn')[0];
+    const stopBtn = document.querySelectorAll('.control-btn')[1];
+    const resultTime = document.getElementById('resultTime');
+    const resultWPM = document.getElementById('resultWPM');
+    
+    // Reset everything to initial state
+    isTestRunning = false;
+    startTime = null;
+    
+    // Reset input area
+    typingInput.disabled = true;
+    typingInput.value = '';
+    typingInput.placeholder = 'Click the start button to begin the test';
+    
+    // Reset button states
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    
+    // Reset results display
+    resultTime.textContent = '0s';
+    resultWPM.textContent = '0';
+    
+    // Generate new text and update difficulty level
+    displayText();
+    updateResultLevel();
+}
+
+// Function to initialize button states
+function initializeButtonStates() {
+    const startBtn = document.querySelectorAll('.control-btn')[0];
+    const stopBtn = document.querySelectorAll('.control-btn')[1];
+    
+    // Initial button states
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+}
+
 // Event listener for difficulty selection change
 document.addEventListener('DOMContentLoaded', function() {
     const difficultySelect = document.getElementById('difficultySelect');
+    const controlBtns = document.querySelectorAll('.control-btn');
+    const startBtn = controlBtns[0];
+    const stopBtn = controlBtns[1];
+    const retryBtn = controlBtns[2];
     
-    // Display initial text
+    // Initialize button states
+    initializeButtonStates();
+    
+    // Display initial text and update difficulty level
     displayText();
+    updateResultLevel();
     
-    // Update text when difficulty changes
-    difficultySelect.addEventListener('change', displayText);
+    // Update text and difficulty level when difficulty changes
+    difficultySelect.addEventListener('change', function() {
+        displayText();
+        updateResultLevel();
+    });
     
-    // Update text when Start button is clicked (new random text)
-    const startBtn = document.querySelector('.control-btn');
-    if (startBtn) {
-        startBtn.addEventListener('click', function() {
-            displayText();
-        });
-    }
+    // Add event listeners to control buttons if they exist
+    if (startBtn) startBtn.addEventListener('click', startTest);
+    if (stopBtn) stopBtn.addEventListener('click', stopTest);
+    if (retryBtn) retryBtn.addEventListener('click', retryTest);
 });
