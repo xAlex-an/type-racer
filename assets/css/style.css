@@ -1,0 +1,87 @@
+/* TypeRacer Header Styles */
+.typeracer-header {
+    background-color: #ff8400;
+}
+
+.typeracer-title {
+    font-family: 'Alegreya', cursive;
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.instructions-btn {
+    font-weight: 500;
+}
+
+/* Main Layout Styles */
+.text-display {
+    background-color: #ffffff;
+    border: 2px solid #e9ecef;
+}
+
+.input-area {
+    background-color: #ffffff;
+    border: 2px solid #e9ecef;
+}
+
+.input-area textarea {
+    background-color: #ffffff!important;
+    resize: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.input-area textarea:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.control-btn {
+    border: 3px solid #ff8400;
+    color: #555;
+    background-color: transparent;
+    font-weight: 600;
+    padding: 12px 24px;
+    
+}
+
+.results-panel {
+    border: 2px solid #ff8400;
+    border-radius: 8px;
+}
+
+.results-panel .card-header {
+    background-color: #fff3e0;
+    border-bottom: 2px solid #ff8400;
+    font-weight: 600;
+}
+
+.results-panel .card-body {
+    font-family: 'Nunito', sans-serif;
+}
+
+/* Responsive Design */
+@media (max-width: 991.98px) {
+    .results-panel {
+        margin-top: 2rem;
+    }
+    
+    .control-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .typeracer-title {
+        font-size: 2rem;
+    }
+    
+    .control-btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.5rem;
+        margin-right: 0 !important;
+    }
+}
