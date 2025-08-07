@@ -36,7 +36,95 @@ function displayText() {
     const selectedDifficulty = difficultySelect.value.toLowerCase();
     const randomText = getRandomText(selectedDifficulty);
     
-    textToType.textContent = randomText;
+    // Split text into words and wrap each word in a span for individual styling
+    const words = randomText.split(' ');
+    const wrappedWords = words.map((word, index) => {
+        return `<span class="word" data-word-index="${index}">${word}</span>`;
+    });
+    
+    // Join words with spaces and display
+    textToType.innerHTML = wrappedWords.join(' ');
+}
+
+// Function to get the current sample text being displayed (plain text version)
+function getCurrentSampleText() {
+    const textToType = document.getElementById('textToType');
+    return textToType.textContent;
+}
+
+// Function to highlight words based on typing accuracy
+function highlightTypedWords() {
+    const typingInput = document.getElementById('typingInput');
+    const textToType = document.getElementById('textToType');
+    
+    // Get the original words and typed words
+    const originalWords = getCurrentSampleText().trim().split(/\s+/);
+    const typedText = typingInput.value.trim();
+    const typedWords = typedText === '' ? [] : typedText.split(/\s+/);
+    
+    // Get all word spans
+    const wordSpans = textToType.querySelectorAll('.word');
+    
+    // Reset all word highlights
+    wordSpans.forEach(span => {
+        span.className = 'word';
+    });
+    
+    // Highlight words based on accuracy
+    for (let i = 0; i < wordSpans.length; i++) {
+        if (i < typedWords.length) {
+            // Word has been typed - check if correct
+            if (typedWords[i] === originalWords[i]) {
+                // Correct word - highlight in blue
+                wordSpans[i].classList.add('text-primary');
+            } else {
+                // Incorrect word - highlight in red
+                wordSpans[i].classList.add('text-danger');
+            }
+        } else {
+            // Word not yet typed - keep default styling
+            wordSpans[i].className = 'word';
+        }
+    }
+}
+
+// Function to disable paste functionality
+function disablePaste(inputElement) {
+    // Prevent paste via right-click menu
+    inputElement.addEventListener('paste', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // Prevent paste via keyboard shortcut (Ctrl+V)
+    inputElement.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'v') {
+            e.preventDefault();
+            return false;
+        }
+    });
+}
+
+// Function to setup real-time typing accuracy
+function setupRealTimeAccuracy() {
+    const typingInput = document.getElementById('typingInput');
+    
+    // Disable paste functionality
+    disablePaste(typingInput);
+    
+    // Add real-time input event listener for word highlighting
+    typingInput.addEventListener('input', function() {
+        if (isTestRunning) {
+            highlightTypedWords();
+        }
+    });
+    
+    // Also highlight on keyup to catch any missed events
+    typingInput.addEventListener('keyup', function() {
+        if (isTestRunning) {
+            highlightTypedWords();
+        }
+    });
 }
 
 // Function to update difficulty level in results
@@ -106,6 +194,12 @@ function startTest() {
     // Generate new text for the test and update difficulty in results
     displayText();
     updateResultLevel();
+    
+    // Reset word highlights when starting
+    const wordSpans = document.querySelectorAll('.word');
+    wordSpans.forEach(span => {
+        span.className = 'word';
+    });
 }
 
 // Function to stop the typing test
@@ -178,6 +272,12 @@ function retryTest() {
     // Generate new text and update difficulty level
     displayText();
     updateResultLevel();
+    
+    // Reset word highlights
+    const wordSpans = document.querySelectorAll('.word');
+    wordSpans.forEach(span => {
+        span.className = 'word';
+    });
 }
 
 // Function to initialize button states
@@ -205,10 +305,19 @@ document.addEventListener('DOMContentLoaded', function() {
     displayText();
     updateResultLevel();
     
+    // Setup real-time typing accuracy feature
+    setupRealTimeAccuracy();
+    
     // Update text and difficulty level when difficulty changes
     difficultySelect.addEventListener('change', function() {
         displayText();
         updateResultLevel();
+        
+        // Reset highlights when difficulty changes
+        const wordSpans = document.querySelectorAll('.word');
+        wordSpans.forEach(span => {
+            span.className = 'word';
+        });
     });
     
     // Add event listeners to control buttons if they exist
