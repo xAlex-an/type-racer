@@ -86,7 +86,202 @@ function highlightTypedWords() {
             wordSpans[i].className = 'word';
         }
     }
+}// ...existing code...
+
+// Function to start the typing test automatically
+function autoStartTest() {
+    // Prevent multiple starts
+    if (isTestRunning) {
+        return;
+    }
+    
+    // Record start time
+    startTime = Date.now();
+    isTestRunning = true;
+    
+    // Update button states
+    const stopBtn = document.querySelectorAll('.control-btn')[0];
+    stopBtn.disabled = false;
+    
+    // Update difficulty in results
+    updateResultLevel();
+    
+    console.log('Test started automatically!');
 }
+
+// Function to handle typing input events
+function handleTypingInput() {
+    const typingInput = document.getElementById('typingInput');
+    
+    // Start test if not already running and input has content
+    if (!isTestRunning && typingInput.value.trim().length > 0) {
+        autoStartTest();
+    }
+    
+    // Highlight words in real-time if test is running
+    if (isTestRunning) {
+        highlightTypedWords();
+    }
+}
+
+// Function to setup auto-start typing functionality
+function setupAutoStartTyping() {
+    const typingInput = document.getElementById('typingInput');
+    
+    // Disable paste functionality
+    disablePaste(typingInput);
+    
+    // Add input event listener for auto-start and real-time highlighting
+    typingInput.addEventListener('input', handleTypingInput);
+    
+    // Also handle keyup events
+    typingInput.addEventListener('keyup', function() {
+        if (isTestRunning) {
+            highlightTypedWords();
+        }
+    });
+    
+    // Handle backspace/delete when input becomes empty
+    typingInput.addEventListener('keydown', function(e) {
+        // If user clears all text and test is running, we could optionally stop the test
+        // For now, we'll just continue the test even if input is cleared
+    });
+}
+
+// Function to stop the typing test
+function stopTest() {
+    const typingInput = document.getElementById('typingInput');
+    const stopBtn = document.querySelectorAll('.control-btn')[0];
+    const retryBtn = document.querySelectorAll('.control-btn')[1];
+    const resultTime = document.getElementById('resultTime');
+    const resultWPM = document.getElementById('resultWPM');
+    
+    if (!isTestRunning || !startTime) {
+        return;
+    }
+    
+    // Calculate elapsed time in seconds
+    const endTime = Date.now();
+    const elapsedTimeMs = endTime - startTime;
+    const elapsedTimeSeconds = elapsedTimeMs / 1000;
+    
+    // Get the original text and typed text
+    const originalText = getCurrentSampleText();
+    const typedText = typingInput.value;
+    
+    // Calculate correct words and WPM
+    const correctWords = calculateCorrectWords(originalText, typedText);
+    const wpm = calculateWPM(correctWords, elapsedTimeSeconds);
+    
+    // Update the results display
+    resultTime.textContent = elapsedTimeSeconds.toFixed(2) + 's';
+    resultWPM.textContent = wpm;
+    
+    // Disable typing input
+    typingInput.disabled = true;
+    typingInput.placeholder = 'Test completed! Click Retry to begin a new test.';
+    
+    // Update button states
+    stopBtn.disabled = true;
+    retryBtn.disabled = false;
+    
+    // Reset test state
+    isTestRunning = false;
+    startTime = null;
+}
+
+// Function to retry the typing test
+function retryTest() {
+    const typingInput = document.getElementById('typingInput');
+    const stopBtn = document.querySelectorAll('.control-btn')[0];
+    const retryBtn = document.querySelectorAll('.control-btn')[1];
+    const resultTime = document.getElementById('resultTime');
+    const resultWPM = document.getElementById('resultWPM');
+    
+    // Reset everything to initial state
+    isTestRunning = false;
+    startTime = null;
+    
+    // Reset input area
+    typingInput.disabled = false;
+    typingInput.value = '';
+    typingInput.placeholder = 'Start typing to begin the test...';
+    typingInput.focus();
+    
+    // Reset button states
+    stopBtn.disabled = true;
+    retryBtn.disabled = false;
+    
+    // Reset results display
+    resultTime.textContent = '0s';
+    resultWPM.textContent = '0';
+    
+    // Generate new text and update difficulty level
+    displayText();
+    updateResultLevel();
+    
+    // Reset word highlights
+    const wordSpans = document.querySelectorAll('.word');
+    wordSpans.forEach(span => {
+        span.className = 'word';
+    });
+}
+
+// Function to initialize button states for auto-start mode
+function initializeAutoStartButtonStates() {
+    const stopBtn = document.querySelectorAll('.control-btn')[0];
+    const retryBtn = document.querySelectorAll('.control-btn')[1];
+    
+    // Initial button states - stop disabled until test starts
+    stopBtn.disabled = true;
+    retryBtn.disabled = false;
+}
+
+// Event listener for difficulty selection change
+document.addEventListener('DOMContentLoaded', function() {
+    const difficultySelect = document.getElementById('difficultySelect');
+    const controlBtns = document.querySelectorAll('.control-btn');
+    const stopBtn = controlBtns[0];
+    const retryBtn = controlBtns[1];
+    const typingInput = document.getElementById('typingInput');
+    
+    // Initialize button states for auto-start mode
+    initializeAutoStartButtonStates();
+    
+    // Enable typing input initially
+    typingInput.disabled = false;
+    typingInput.focus();
+    
+    // Display initial text and update difficulty level
+    displayText();
+    updateResultLevel();
+    
+    // Setup auto-start typing functionality
+    setupAutoStartTyping();
+    
+    // Update text and difficulty level when difficulty changes
+    difficultySelect.addEventListener('change', function() {
+        // If test is running, don't change text mid-test
+        if (isTestRunning) {
+            return;
+        }
+        
+        displayText();
+        updateResultLevel();
+        
+        // Reset highlights when difficulty changes
+        const wordSpans = document.querySelectorAll('.word');
+        wordSpans.forEach(span => {
+            span.className = 'word';
+        });
+    });
+    
+    // Add event listeners to control buttons
+    if (stopBtn) stopBtn.addEventListener('click', stopTest);
+    if (retryBtn) retryBtn.addEventListener('click', retryTest);
+});
+
+// ...existing code...
 
 // Function to disable paste functionality
 function disablePaste(inputElement) {
