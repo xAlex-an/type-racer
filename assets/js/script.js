@@ -107,10 +107,16 @@ function disablePaste(inputElement) {
 
 // Function to handle Enter key press to stop test
 function handleEnterKeyPress(event) {
+    console.log('Enter key pressed. Key:', event.key, 'isTestRunning:', isTestRunning);
+    
     // Check if Enter key was pressed and test is running
     if (event.key === 'Enter' && isTestRunning) {
         event.preventDefault(); // Prevent default Enter behavior (new line)
+        console.log('Stopping test via Enter key...');
         stopTest();
+    } else if (event.key === 'Enter') {
+        console.log('Enter pressed but test is not running');
+        event.preventDefault(); // Prevent new lines even when test is not running
     }
 }
 
@@ -193,6 +199,7 @@ function startTest() {
     // Record start time
     startTime = Date.now();
     isTestRunning = true;
+    console.log('Test started. isTestRunning set to:', isTestRunning);
     
     // Enable typing input and clear it
     typingInput.disabled = false;
@@ -218,6 +225,8 @@ function startTest() {
 
 // Function to stop the typing test
 function stopTest() {
+    console.log('stopTest called. isTestRunning:', isTestRunning, 'startTime:', startTime);
+    
     const typingInput = document.getElementById('typingInput');
     const startBtn = document.querySelectorAll('.control-btn')[0];
     const stopBtn = document.querySelectorAll('.control-btn')[1];
@@ -226,6 +235,7 @@ function stopTest() {
     const resultWPM = document.getElementById('resultWPM');
     
     if (!isTestRunning || !startTime) {
+        console.log('Test not running or no start time, exiting stopTest');
         return;
     }
     
@@ -332,6 +342,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup real-time typing accuracy feature
     setupRealTimeAccuracy();
+    
+    // Additional Enter key handler as backup
+    const typingInput = document.getElementById('typingInput');
+    if (typingInput) {
+        typingInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                console.log('Backup Enter handler triggered. isTestRunning:', isTestRunning);
+                if (isTestRunning) {
+                    e.preventDefault();
+                    stopTest();
+                }
+            }
+        });
+    }
     
     // Update text and difficulty level when difficulty changes
     difficultySelect.addEventListener('change', function() {
