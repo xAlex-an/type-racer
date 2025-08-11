@@ -11,6 +11,55 @@
 
 .instructions-btn {
     font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.instructions-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Instructions Modal Styles */
+.modal-header {
+    border-bottom: 3px solid #e67600;
+}
+
+.modal-content {
+    border: 2px solid #ff8400;
+    border-radius: 12px;
+}
+
+.modal-body {
+    font-family: 'Nunito', sans-serif;
+    line-height: 1.6;
+}
+
+.modal-body .card {
+    border: 1px solid #dee2e6;
+    transition: transform 0.2s ease;
+}
+
+.modal-body .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.modal-body kbd {
+    background-color: #ff8400;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.modal-footer .btn-primary {
+    background-color: #ff8400;
+    border-color: #ff8400;
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #e67600;
+    border-color: #e67600;
 }
 
 /* Main Layout Styles */

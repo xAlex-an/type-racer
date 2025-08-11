@@ -27,7 +27,96 @@
     <!-- Navbar -->
     <div class="text-center py-4 typeracer-header">
       <h1 class="text-white mb-3 typeracer-title">TypeRacer</h1>
-      <button class="btn btn-light px-4 py-2 instructions-btn" id="instructionsBtn">Instructions</button>
+      <button class="btn btn-light px-4 py-2 instructions-btn" id="instructionsBtn" data-bs-toggle="modal" data-bs-target="#instructionsModal">Instructions</button>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div class="modal fade" id="instructionsModal" tabindex="-1" aria-labelledby="instructionsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color: #ff8400; color: white;">
+            <h1 class="modal-title fs-4" id="instructionsModalLabel">
+              <i class="fas fa-keyboard me-2"></i>TypeRacer Instructions
+            </h1>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12">
+                <h5 class="text-primary mb-3"><i class="fas fa-play-circle me-2"></i>How to Take the Test</h5>
+                <ol class="mb-4">
+                  <li class="mb-2"><strong>Select Difficulty:</strong> Choose between Easy, Medium, or Hard difficulty levels</li>
+                  <li class="mb-2"><strong>Start the Test:</strong> Click the "Start" button to begin timing</li>
+                  <li class="mb-2"><strong>Type the Text:</strong> Type the displayed text exactly as shown in the text area</li>
+                  <li class="mb-2"><strong>Stop the Test:</strong> Click "Stop" button or press <kbd>Enter</kbd> to finish</li>
+                  <li class="mb-2"><strong>View Results:</strong> See your Words Per Minute (WPM), time, and accuracy</li>
+                  <li class="mb-2"><strong>Try Again:</strong> Click "Retry" for a new sentence at the same difficulty</li>
+                </ol>
+
+                <h5 class="text-success mb-3"><i class="fas fa-lightbulb me-2"></i>Real-time Features</h5>
+                <ul class="mb-4">
+                  <li class="mb-2"><span class="text-primary fw-bold">Blue highlighting:</span> Correctly typed words</li>
+                  <li class="mb-2"><span class="text-danger fw-bold">Red highlighting:</span> Incorrectly typed words</li>
+                  <li class="mb-2"><strong>Live feedback:</strong> See your accuracy as you type</li>
+                  <li class="mb-2"><strong>Auto-focus:</strong> Text area automatically focuses when starting</li>
+                </ul>
+
+                <h5 class="text-warning mb-3"><i class="fas fa-info-circle me-2"></i>Important Notes</h5>
+                <div class="alert alert-warning">
+                  <ul class="mb-0">
+                    <li><strong>No copy-paste:</strong> Pasting is disabled to ensure fair testing</li>
+                    <li><strong>Word-by-word scoring:</strong> Only completely correct words count toward your WPM</li>
+                    <li><strong>Case sensitive:</strong> Make sure to match capitalization exactly</li>
+                    <li><strong>Punctuation matters:</strong> Include all punctuation marks as shown</li>
+                  </ul>
+                </div>
+
+                <h5 class="text-info mb-3"><i class="fas fa-chart-line me-2"></i>Difficulty Levels</h5>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                      <div class="card-body text-center">
+                        <h6 class="card-title text-success">Easy</h6>
+                        <p class="card-text small">Simple sentences with basic vocabulary and common words</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                      <div class="card-body text-center">
+                        <h6 class="card-title text-warning">Medium</h6>
+                        <p class="card-text small">Complex sentences with varied vocabulary and longer texts</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                      <div class="card-body text-center">
+                        <h6 class="card-title text-danger">Hard</h6>
+                        <p class="card-text small">Advanced texts with technical terms and complex sentences</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <h5 class="text-secondary mb-3"><i class="fas fa-keyboard me-2"></i>Keyboard Shortcuts</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <kbd>Enter</kbd> - Stop the current test
+                  </div>
+                  <div class="col-md-6">
+                    <kbd>Ctrl+V</kbd> - Disabled (no pasting allowed)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="document.getElementById('typingInput').focus()">Got It, Let's Start!</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Main Content -->

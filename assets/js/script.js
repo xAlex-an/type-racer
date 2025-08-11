@@ -203,7 +203,7 @@ function startTest() {
     // Update button states
     startBtn.disabled = true;
     stopBtn.disabled = false;
-    retryBtn.disabled = false;
+    retryBtn.disabled = true; // Disable retry while test is running
     
     // Generate new text for the test and update difficulty in results
     displayText();
@@ -253,7 +253,7 @@ function stopTest() {
     // Update button states
     startBtn.disabled = false;
     stopBtn.disabled = true;
-    retryBtn.disabled = false;
+    retryBtn.disabled = false; // Enable retry after test completion
     
     // Reset test state
     isTestRunning = false;
@@ -275,22 +275,23 @@ function retryTest() {
     isTestRunning = false;
     startTime = null;
     
-    // Reset input area
-    typingInput.disabled = true;
+    // Reset input area - re-enable textarea for new test
+    typingInput.disabled = false;
     typingInput.value = '';
     typingInput.placeholder = 'Click the start button to begin the test. Press Enter to stop.';
+    typingInput.focus(); // Focus on textarea for better UX
     
-    // Reset button states
+    // Reset button states - retry disabled until next test completion
     startBtn.disabled = false;
     stopBtn.disabled = true;
-    retryBtn.disabled = false;
+    retryBtn.disabled = true; // Disable retry until test is completed
     
     // Reset results display
     resultTime.textContent = '0s';
     resultWPM.textContent = '0';
     
-    // Generate new text and update difficulty level
-    displayText();
+    // Generate NEW random text of the same difficulty level
+    displayText(); // This will get a new random text from the selected difficulty
     updateResultLevel();
     
     // Reset word highlights
@@ -298,6 +299,8 @@ function retryTest() {
     wordSpans.forEach(span => {
         span.className = 'word';
     });
+    
+    console.log('Test retried! New sentence generated for the same difficulty level.');
 }
 
 // Function to initialize button states
@@ -306,10 +309,10 @@ function initializeButtonStates() {
     const stopBtn = document.querySelectorAll('.control-btn')[1];
     const retryBtn = document.querySelectorAll('.control-btn')[2];
     
-    // Initial button states
+    // Initial button states - retry disabled until first test completion
     startBtn.disabled = false;
     stopBtn.disabled = true;
-    retryBtn.disabled = false;
+    retryBtn.disabled = true; // Disabled initially until user completes first test
 }
 
 // Event listener for difficulty selection change
